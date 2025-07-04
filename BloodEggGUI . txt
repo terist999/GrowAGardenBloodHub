@@ -1,0 +1,56 @@
+-- 🩸 Created by Blood.lust 🩸
+-- Grow a Garden - Bloody Egg Randomizer GUI
+
+local pets = {
+    {name = "Bunny", rarity = "Common", description = "Eats a carrot at 1.5x value every 40s. Bonus increases with age."},
+    {name = "Dog", rarity = "Common", description = "5% chance to dig a seed every 60s."},
+    {name = "Chicken", rarity = "Uncommon", description = "10% egg hatch speed. 11.45% chance to lay egg with Rooster."},
+    {name = "Monkey", rarity = "Rare", description = "2.5% chance to refund fruit when selling."},
+    {name = "Polar Bear", rarity = "Legendary", description = "10% chance to freeze a crop every 90s."},
+    {name = "Red Fox", rarity = "Mythical", description = "Tries to steal a seed from another player's plot every 10 mins."},
+    {name = "Dragonfly", rarity = "Divine", description = "Turns a random crop gold every 5 mins."},
+    {name = "Blood Owl", rarity = "Divine", description = "All active pets gain <0.5 XP per second."},
+}
+
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "BloodyEggGui"
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 400, 0, 250)
+frame.Position = UDim2.new(0.5, -200, 0.5, -125)
+frame.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+frame.BorderSizePixel = 4
+frame.BorderColor3 = Color3.fromRGB(255, 0, 0)
+
+local title = Instance.new("TextLabel", frame)
+title.Text = "🩸 Blood.lust Egg Randomizer 🩸"
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.fromRGB(255, 0, 0)
+title.Font = Enum.Font.Fantasy
+title.TextScaled = true
+
+local result = Instance.new("TextLabel", frame)
+result.Size = UDim2.new(1, -20, 0, 140)
+result.Position = UDim2.new(0, 10, 0, 50)
+result.BackgroundTransparency = 1
+result.TextColor3 = Color3.fromRGB(255, 255, 255)
+result.Font = Enum.Font.GothamSemibold
+result.TextWrapped = true
+result.TextScaled = true
+result.Text = "Click SPIN to reveal a pet!"
+
+local button = Instance.new("TextButton", frame)
+button.Text = "🎲 Spin Egg"
+button.Size = UDim2.new(0.5, 0, 0, 40)
+button.Position = UDim2.new(0.25, 0, 1, -50)
+button.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+button.TextColor3 = Color3.fromRGB(255, 255, 255)
+button.Font = Enum.Font.GothamBold
+button.TextScaled = true
+
+button.MouseButton1Click:Connect(function()
+    local pet = pets[math.random(1, #pets)]
+    result.Text = "🎉 " .. pet.name .. " (" .. pet.rarity .. ")\n🧬 " .. pet.description
+end)
