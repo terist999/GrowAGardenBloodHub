@@ -1,56 +1,120 @@
--- 🩸 Created by Blood.lust 🩸
--- Grow a Garden - Bloody Egg Randomizer GUI
+--[[ 
+    Grow a Garden: BloodEgg GUI Stealer
+    Created by Blood.lust (terist999)
+--]]
 
-local pets = {
-    {name = "Bunny", rarity = "Common", description = "Eats a carrot at 1.5x value every 40s. Bonus increases with age."},
-    {name = "Dog", rarity = "Common", description = "5% chance to dig a seed every 60s."},
-    {name = "Chicken", rarity = "Uncommon", description = "10% egg hatch speed. 11.45% chance to lay egg with Rooster."},
-    {name = "Monkey", rarity = "Rare", description = "2.5% chance to refund fruit when selling."},
-    {name = "Polar Bear", rarity = "Legendary", description = "10% chance to freeze a crop every 90s."},
-    {name = "Red Fox", rarity = "Mythical", description = "Tries to steal a seed from another player's plot every 10 mins."},
-    {name = "Dragonfly", rarity = "Divine", description = "Turns a random crop gold every 5 mins."},
-    {name = "Blood Owl", rarity = "Divine", description = "All active pets gain <0.5 XP per second."},
-}
+-- Toggle Key
+local toggleKey = Enum.KeyCode.RightShift
+local guiVisible = true
 
-local player = game.Players.LocalPlayer
-local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-gui.Name = "BloodyEggGui"
+-- Create ScreenGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "BloodEggGUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = game:GetService("CoreGui")
 
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 400, 0, 250)
-frame.Position = UDim2.new(0.5, -200, 0.5, -125)
-frame.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
-frame.BorderSizePixel = 4
-frame.BorderColor3 = Color3.fromRGB(255, 0, 0)
+-- Main Frame (Movable)
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 300, 0, 200)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.BackgroundTransparency = 0.2
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Visible = true
+MainFrame.Parent = ScreenGui
 
-local title = Instance.new("TextLabel", frame)
-title.Text = "🩸 Blood.lust Egg Randomizer 🩸"
-title.Size = UDim2.new(1, 0, 0, 40)
-title.BackgroundTransparency = 1
-title.TextColor3 = Color3.fromRGB(255, 0, 0)
-title.Font = Enum.Font.Fantasy
-title.TextScaled = true
+-- Title
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.BackgroundTransparency = 1
+Title.Text = "🥚 BloodEgg Stealer 🥚"
+Title.TextColor3 = Color3.fromRGB(255, 50, 50)
+Title.TextScaled = true
+Title.Font = Enum.Font.GothamBold
+Title.Parent = MainFrame
 
-local result = Instance.new("TextLabel", frame)
-result.Size = UDim2.new(1, -20, 0, 140)
-result.Position = UDim2.new(0, 10, 0, 50)
-result.BackgroundTransparency = 1
-result.TextColor3 = Color3.fromRGB(255, 255, 255)
-result.Font = Enum.Font.GothamSemibold
-result.TextWrapped = true
-result.TextScaled = true
-result.Text = "Click SPIN to reveal a pet!"
+-- Egg List
+local EggList = Instance.new("ScrollingFrame")
+EggList.Name = "EggList"
+EggList.Size = UDim2.new(1, -10, 1, -40)
+EggList.Position = UDim2.new(0, 5, 0, 35)
+EggList.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+EggList.BackgroundTransparency = 0.3
+EggList.BorderSizePixel = 0
+EggList.CanvasSize = UDim2.new(0, 0, 0, 0)
+EggList.ScrollBarThickness = 5
+EggList.Parent = MainFrame
 
-local button = Instance.new("TextButton", frame)
-button.Text = "🎲 Spin Egg"
-button.Size = UDim2.new(0.5, 0, 0, 40)
-button.Position = UDim2.new(0.25, 0, 1, -50)
-button.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
-button.TextColor3 = Color3.fromRGB(255, 255, 255)
-button.Font = Enum.Font.GothamBold
-button.TextScaled = true
+-- UIListLayout for Egg buttons
+local Layout = Instance.new("UIListLayout")
+Layout.Padding = UDim.new(0, 5)
+Layout.Parent = EggList
 
-button.MouseButton1Click:Connect(function()
-    local pet = pets[math.random(1, #pets)]
-    result.Text = "🎉 " .. pet.name .. " (" .. pet.rarity .. ")\n🧬 " .. pet.description
+-- Update canvas size on child added
+EggList.ChildAdded:Connect(function()
+	EggList.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y + 5)
 end)
+
+-- Function to steal egg
+local function stealEgg(egg)
+	local prompt = egg:FindFirstChildOfClass("ProximityPrompt")
+	if prompt then
+		fireproximityprompt(prompt)
+	end
+end
+
+-- Scan for Eggs
+local function scanEggs()
+	EggList:ClearAllChildren()
+	Layout.Parent = EggList
+	for _, obj in ipairs(workspace:GetDescendants()) do
+		if obj:IsA("ProximityPrompt") and obj.Parent and obj.Parent.Name:lower():find("egg") then
+			local eggName = obj.Parent.Name
+
+			local btn = Instance.new("TextButton")
+			btn.Size = UDim2.new(1, -10, 0, 30)
+			btn.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+			btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+			btn.Text = "Steal " .. eggName
+			btn.Font = Enum.Font.Gotham
+			btn.TextScaled = true
+			btn.Parent = EggList
+
+			btn.MouseButton1Click:Connect(function()
+				stealEgg(obj.Parent)
+			end)
+
+			-- Floating Text Above Egg
+			local billboard = Instance.new("BillboardGui")
+			billboard.Adornee = obj.Parent
+			billboard.Size = UDim2.new(0, 100, 0, 30)
+			billboard.AlwaysOnTop = true
+			billboard.Name = "BloodTag"
+			billboard.Parent = obj.Parent
+
+			local label = Instance.new("TextLabel")
+			label.Size = UDim2.new(1, 0, 1, 0)
+			label.BackgroundTransparency = 1
+			label.Text = "🩸 Steal Me"
+			label.TextColor3 = Color3.new(1, 0, 0)
+			label.TextScaled = true
+			label.Font = Enum.Font.GothamBold
+			label.Parent = billboard
+		end
+	end
+end
+
+-- Toggle GUI with RightShift
+game:GetService("UserInputService").InputBegan:Connect(function(input, gpe)
+	if gpe then return end
+	if input.KeyCode == toggleKey then
+		guiVisible = not guiVisible
+		MainFrame.Visible = guiVisible
+	end
+end)
+
+-- Initial Scan
+scanEggs()
