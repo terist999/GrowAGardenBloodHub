@@ -1,120 +1,82 @@
---[[ 
-    Grow a Garden: BloodEgg GUI Stealer
-    Created by Blood.lust (terist999)
---]]
+--[[ Grow a Garden: BloodEgg GUI Stealer with Spin Feature Created by Blood.lust (terist999) --]]
 
--- Toggle Key
-local toggleKey = Enum.KeyCode.RightShift
-local guiVisible = true
+-- Toggle Key local toggleKey = Enum.KeyCode.RightShift local guiVisible = true
 
--- Create ScreenGui
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "BloodEggGUI"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = game:GetService("CoreGui")
+-- Create ScreenGui local ScreenGui = Instance.new("ScreenGui") ScreenGui.Name = "BloodEggGUI" ScreenGui.ResetOnSpawn = false ScreenGui.Parent = game:GetService("CoreGui")
 
--- Main Frame (Movable)
-local MainFrame = Instance.new("Frame")
-MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 300, 0, 200)
-MainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.BackgroundTransparency = 0.2
-MainFrame.Active = true
-MainFrame.Draggable = true
-MainFrame.Visible = true
-MainFrame.Parent = ScreenGui
+-- Main Frame local MainFrame = Instance.new("Frame") MainFrame.Name = "MainFrame" MainFrame.Size = UDim2.new(0, 300, 0, 200) MainFrame.Position = UDim2.new(0.5, -150, 0.5, -100) MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) MainFrame.BackgroundTransparency = 0.2 MainFrame.Active = true MainFrame.Draggable = true MainFrame.Visible = true MainFrame.Parent = ScreenGui
 
--- Title
-local Title = Instance.new("TextLabel")
-Title.Name = "Title"
-Title.Size = UDim2.new(1, 0, 0, 30)
-Title.BackgroundTransparency = 1
-Title.Text = "🥚 BloodEgg Stealer 🥚"
-Title.TextColor3 = Color3.fromRGB(255, 50, 50)
-Title.TextScaled = true
-Title.Font = Enum.Font.GothamBold
-Title.Parent = MainFrame
+-- Title local Title = Instance.new("TextLabel") Title.Name = "Title" Title.Size = UDim2.new(1, 0, 0, 30) Title.BackgroundTransparency = 1 Title.Text = "🥚 BloodEgg Stealer + Spinner" Title.TextColor3 = Color3.fromRGB(255, 50, 50) Title.TextScaled = true Title.Font = Enum.Font.GothamBold Title.Parent = MainFrame
 
--- Egg List
-local EggList = Instance.new("ScrollingFrame")
-EggList.Name = "EggList"
-EggList.Size = UDim2.new(1, -10, 1, -40)
-EggList.Position = UDim2.new(0, 5, 0, 35)
-EggList.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-EggList.BackgroundTransparency = 0.3
-EggList.BorderSizePixel = 0
-EggList.CanvasSize = UDim2.new(0, 0, 0, 0)
-EggList.ScrollBarThickness = 5
-EggList.Parent = MainFrame
+-- Egg List local EggList = Instance.new("ScrollingFrame") EggList.Name = "EggList" EggList.Size = UDim2.new(1, -10, 1, -40) EggList.Position = UDim2.new(0, 5, 0, 35) EggList.BackgroundColor3 = Color3.fromRGB(50, 50, 50) EggList.BackgroundTransparency = 0.3 EggList.BorderSizePixel = 0 EggList.CanvasSize = UDim2.new(0, 0, 0, 0) EggList.ScrollBarThickness = 5 EggList.Parent = MainFrame
 
--- UIListLayout for Egg buttons
-local Layout = Instance.new("UIListLayout")
-Layout.Padding = UDim.new(0, 5)
-Layout.Parent = EggList
+local Layout = Instance.new("UIListLayout") Layout.Padding = UDim.new(0, 5) Layout.Parent = EggList
 
--- Update canvas size on child added
-EggList.ChildAdded:Connect(function()
-	EggList.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y + 5)
-end)
+EggList.ChildAdded:Connect(function() EggList.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y + 5) end)
 
--- Function to steal egg
-local function stealEgg(egg)
-	local prompt = egg:FindFirstChildOfClass("ProximityPrompt")
-	if prompt then
-		fireproximityprompt(prompt)
+local function spinEgg(eggModel) local prompt = eggModel:FindFirstChildOfClass("ProximityPrompt") if prompt then -- Spin animation spawn(function() for i = 1, 30 do if eggModel:IsA("Model") and eggModel.PrimaryPart then eggModel:SetPrimaryPartCFrame(eggModel.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(30), 0)) end wait(0.05) end end)
+
+-- Random content
+	local randomItems = {"Golden Plant", "Bloody Root", "Pet Worm", "Mystery Seed", "Nothing 🙁"}
+	local chosen = randomItems[math.random(1, #randomItems)]
+
+	-- Floating text
+	local billboard = eggModel:FindFirstChild("BloodTag")
+	if billboard then billboard:Destroy() end
+
+	billboard = Instance.new("BillboardGui")
+	billboard.Name = "BloodTag"
+	billboard.Adornee = eggModel:FindFirstChildWhichIsA("BasePart")
+	billboard.Size = UDim2.new(0, 150, 0, 30)
+	billboard.AlwaysOnTop = true
+	billboard.Parent = eggModel
+
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, 0, 1, 0)
+	label.BackgroundTransparency = 1
+	label.Text = "Spun: " .. chosen
+	label.TextColor3 = Color3.new(1, 0, 0)
+	label.TextScaled = true
+	label.Font = Enum.Font.GothamBold
+	label.Parent = billboard
+end
+
+end
+
+local function scanEggs() EggList:ClearAllChildren() Layout.Parent = EggList for _, obj in ipairs(workspace:GetDescendants()) do if obj:IsA("ProximityPrompt") and obj.Parent and obj.Parent.Name:lower():find("egg") then local eggModel = obj.Parent
+
+local btn = Instance.new("TextButton")
+		btn.Size = UDim2.new(1, -10, 0, 30)
+		btn.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+		btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+		btn.Text = "Spin " .. eggModel.Name
+		btn.Font = Enum.Font.Gotham
+		btn.TextScaled = true
+		btn.Parent = EggList
+
+		btn.MouseButton1Click:Connect(function()
+			spinEgg(eggModel)
+		end)
+
+		-- Initial floating text
+		local billboard = Instance.new("BillboardGui")
+		billboard.Adornee = eggModel:FindFirstChildWhichIsA("BasePart")
+		billboard.Size = UDim2.new(0, 100, 0, 30)
+		billboard.AlwaysOnTop = true
+		billboard.Name = "BloodTag"
+		billboard.Parent = eggModel
+
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.new(1, 0, 1, 0)
+		label.BackgroundTransparency = 1
+		label.Text = "🥚 Spin Me"
+		label.TextColor3 = Color3.new(1, 0, 0)
+		label.TextScaled = true
+		label.Font = Enum.Font.GothamBold
+		label.Parent = billboard
 	end
 end
 
--- Scan for Eggs
-local function scanEggs()
-	EggList:ClearAllChildren()
-	Layout.Parent = EggList
-	for _, obj in ipairs(workspace:GetDescendants()) do
-		if obj:IsA("ProximityPrompt") and obj.Parent and obj.Parent.Name:lower():find("egg") then
-			local eggName = obj.Parent.Name
-
-			local btn = Instance.new("TextButton")
-			btn.Size = UDim2.new(1, -10, 0, 30)
-			btn.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-			btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-			btn.Text = "Steal " .. eggName
-			btn.Font = Enum.Font.Gotham
-			btn.TextScaled = true
-			btn.Parent = EggList
-
-			btn.MouseButton1Click:Connect(function()
-				stealEgg(obj.Parent)
-			end)
-
-			-- Floating Text Above Egg
-			local billboard = Instance.new("BillboardGui")
-			billboard.Adornee = obj.Parent
-			billboard.Size = UDim2.new(0, 100, 0, 30)
-			billboard.AlwaysOnTop = true
-			billboard.Name = "BloodTag"
-			billboard.Parent = obj.Parent
-
-			local label = Instance.new("TextLabel")
-			label.Size = UDim2.new(1, 0, 1, 0)
-			label.BackgroundTransparency = 1
-			label.Text = "🩸 Steal Me"
-			label.TextColor3 = Color3.new(1, 0, 0)
-			label.TextScaled = true
-			label.Font = Enum.Font.GothamBold
-			label.Parent = billboard
-		end
-	end
 end
 
--- Toggle GUI with RightShift
-game:GetService("UserInputService").InputBegan:Connect(function(input, gpe)
-	if gpe then return end
-	if input.KeyCode == toggleKey then
-		guiVisible = not guiVisible
-		MainFrame.Visible = guiVisible
-	end
-end)
-
--- Initial Scan
-scanEggs()
+-- Toggle GUI with RightShift local UIS = game:GetService("UserInputService") UIS.InputBegan:Connect(function(input, gpe) if gpe then return end if
