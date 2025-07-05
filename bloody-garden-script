@@ -1,0 +1,60 @@
+-- 🩸 Grow‑A‑Garden Script by Blood.lust 🩸
+-- Theme: Bloody Harvest
+
+-- Utility for getting remote script/data
+local function fetchScript(url)
+    local success, response = pcall(function()
+        return game:HttpGet(url)
+    end)
+    if success and response then
+        return response
+    else
+        warn("🩸 Failed to fetch script from:", url)
+        return ""
+    end
+end
+
+-- Main Execution (example stub)
+do
+    local BLOOD_COLOR = Color3.fromRGB(150, 0, 20)  -- dark blood red
+
+    -- Example: dripping blood effect on GUI
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "BloodOverlay"
+    screenGui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+
+    local bleedFrame = Instance.new("Frame")
+    bleedFrame.Size = UDim2.new(1,0,1,0)
+    bleedFrame.BackgroundColor3 = BLOOD_COLOR
+    bleedFrame.BackgroundTransparency = 0.8
+    bleedFrame.Parent = screenGui
+
+    -- Animate a slow fade ripple effect
+    spawn(function()
+        while true do
+            for i = 0.8, 0.4, -0.01 do
+                bleedFrame.BackgroundTransparency = i
+                wait(0.1)
+            end
+            for i = 0.4, 0.8, 0.01 do
+                bleedFrame.BackgroundTransparency = i
+                wait(0.1)
+            end
+        end
+    end)
+
+    -- Example: call original grow‑a‑garden logic after effect
+    local raw = fetchScript("https://raw.githubusercontent.com/Ps99OPscripts/grow-a-garden-script/main/script grow a garden")
+    if raw ~= "" then
+        local func = loadstring(raw)
+        if func then
+            -- you could wrap or modify behaviors here
+            func()
+        else
+            warn("🩸 Failed to compile grow‑a‑garden script.")
+        end
+    end
+end
+
+-- End of script
+print("🩸 Bloody script executed — Created by Blood.lust 🩸")
