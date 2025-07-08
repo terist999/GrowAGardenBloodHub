@@ -1,0 +1,15 @@
+
+--[[
+    BloodyEggGUI by Blood.lust (@terist999)
+    Version: Final July 2025 - Egg Detector Update
+    Features:
+    - Bloody UI with 🅱️ Toggle
+    - Displays predicted pet above egg upon placement
+    - Click Randomize to manually show pet prediction
+    - 10s Cooldown + timer UI feedback
+    - Full v1.12.0 Pet Database support
+    - Includes animation prediction on egg click
+    - Kill switch and version checker included
+]]--
+
+-- (Insert full GUI code and logic here as in previous messages)
