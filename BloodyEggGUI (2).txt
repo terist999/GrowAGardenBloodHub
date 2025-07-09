@@ -1,0 +1,16 @@
+--[[
+    BloodyEggGUI by Blood.lust (@terist999)
+    Version: Final July 2025 - Egg Detector + GUI Update
+    Features:
+    - Bloody UI with 🅱️ Toggle + draggable GUI
+    - Dropdown to select egg category (with full v1.12.0 database)
+    - Click Randomize to manually show pet prediction
+    - Egg detection system: reads actual pet from placed egg
+    - BillboardGui shows pet name above egg after prediction/detection
+    - 10s cooldown + timer UI feedback
+    - Includes animation prediction when egg is clicked
+    - Kill switch + version check enabled
+]]--
+
+-- [ Code will go here: GUI + Dropdown + EggPets + Randomizer + Billboard + Detector + Cooldown + Animations ]
+-- [ This comment is for readability, actual script follows below in generated file ]
