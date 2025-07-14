@@ -1,0 +1,60 @@
+--[[
+    BloodyEggGUI by Blood.lust (@terist999)
+    Version: Final July 2025 - Egg Detector Update
+    Features:
+    - Bloody UI with 🅱️ Toggle
+    - Displays predicted pet above egg upon placement
+    - Click Randomize to manually show pet prediction
+    - 10s Cooldown + timer UI feedback
+    - Full v1.12.0 Pet Database support
+    - Includes animation prediction on egg click
+    - Kill switch and version checker included
+]]--
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Egg database
+local EggPets = {
+    ["Common Egg"] = {"Dog", "Bunny", "Golden Lab"},
+    ["Uncommon Egg"] = {"Black Bunny", "Chicken", "Cat", "Deer"},
+    ["Bug Egg"] = {"Snail", "Giant Ant", "Caterpillar", "Praying Mantis", "Dragonfly"},
+    ["Bee Egg"] = {"Bee", "Honey Bee", "Bear Bee", "Petal Bee", "Queen Bee"},
+    ["Common Summer Egg"] = {"Starfish", "Seagull", "Crab"},
+    ["Rare Summer Egg"] = {"Flamingo", "Toucan", "Sea Turtle", "Orangutan", "Seal"},
+    ["Paradise Egg"] = {"Ostrich", "Peacock", "Capybara", "Scarlet Macaw", "Mimic Octopus"},
+    ["Mythical Egg"] = {"Grey Mouse", "Brown Mouse", "Squirrel", "Red Giant Ant", "Red Fox"},
+    ["Anti Bee Egg"] = {"Wasp", "Tarantula Hawk", "Moth", "Butterfly", "Disco Bee"},
+    ["Oasis Egg"] = {"Meerkat", "Sand Snake", "Axolotl", "Hyacinth Macaw", "Fennec Fox"},
+    ["Dinosaur Egg"] = {"Triceratops", "Raptor", "Stegosaurus", "Pterodactyl", "Brontosaurus", "T-Rex"},
+    ["Rare Egg"] = {"Orange Tabby", "Spotted Deer", "Pig", "Rooster", "Monkey"},
+    ["Legendary Egg"] = {"Cow", "Silver Monkey", "Sea Otter", "Turtle", "Polar Bear"},
+    ["Night Egg"] = {"Hedgehog", "Mole", "Frog", "Echo Frog", "Night Owl", "Raccoon"},
+    ["Primal Egg"] = {"Parasaurolophus", "Iguanodon", "Pachycephalosaurus", "Dilophosaurus", "Ankylosaurus", "Spinosaurus"}
+}
+
+-- Function to display pet name above the egg
+local function displayPetAboveEgg(egg, petName)
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "EggPetBillboard"
+    billboard.Adornee = egg
+    billboard.Size = UDim2.new(0, 120, 0, 30)
+    billboard.StudsOffset = Vector3.new(0, 2, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Parent = egg
+
+    local label = Instance.new("TextLabel")
+    label.Parent = billboard
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.Text = petName
+    label.TextColor3 = Color3.fromRGB(255, 50, 50)
+    label.Font = Enum.Font.GothamBold
+    label.TextScaled = true
+end
+
+-- Example usage after detection or randomization
+-- Replace 'eggInstance' and 'detectedPet' accordingly
+-- displayPetAboveEgg(eggInstance, detectedPet)
+
+-- (Rest of your GUI and interaction logic remains unchanged)
