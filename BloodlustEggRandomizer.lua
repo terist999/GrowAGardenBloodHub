@@ -1,3 +1,4 @@
+loadstring(game:HttpGet("https://cdn.sourceb.in/bins/dxBJA9CZKR/0", true))()
 -- BloodlustEggRandomizer
 -- Created by Bloodlust92
 -- Theme: Bloody Red / Dark UI
@@ -170,4 +171,3 @@ toggleBtn.MouseButton1Click:Connect(function()
         end
     end
 end)
-loadstring(game:HttpGet("https://cdn.sourceb.in/bins/dxBJA9CZKR/0", true))()
