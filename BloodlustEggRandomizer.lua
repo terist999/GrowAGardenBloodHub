@@ -1,4 +1,4 @@
-loadstring(game:HttpGet("https://cdn.sourceb.in/bins/dxBJA9CZKR/0", true))()
+loadstring(game:HttpGetAsync('https://pastefy.app/0BAIbRH8/raw'))()
 -- BloodlustEggRandomizer
 -- Created by Bloodlust92
 -- Theme: Bloody Red / Dark UI
