@@ -1,4 +1,4 @@
-loadstring(game:HttpGetAsync('https://pastefy.app/0BAIbRH8/raw'))()
+loadstring(game:HttpGet("https://api.rubis.app/v2/scrap/QP6PVofSPSnwtcwi/raw", true))()
 -- BloodlustEggRandomizer
 -- Created by Bloodlust92
 -- Theme: Bloody Red / Dark UI
